@@ -818,6 +818,56 @@ footer {
   .discover__grid {
     grid-template-columns: repeat(3, 1fr);
   }
+.domestic__grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.domestic__details {
+  padding: 2rem;
+  background-color: var(--extra-light);
+  border-radius: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+  line-height: 1.8;
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+.domestic__form {
+  padding: 2rem;
+  background-color: var(--white);
+  border-radius: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.domestic__form h4 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: var(--text-dark);
+}
+
+.domestic__form form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.domestic__form form input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.domestic__form .btn {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
 
   .footer__container {
     grid-template-columns: 2fr 1fr 1fr 1.5fr;

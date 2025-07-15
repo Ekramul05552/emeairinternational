@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thailand Visa Document Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <style>
+        :root {
+            --primary: #1e3a8a; /* Navy blue */
+            --accent: #b8860b; /* Gold */
+            --bg-light: #f9fafb;
+            --bg-dark: #1f2937;
+        }
+        body {
+            background: linear-gradient(135deg, var(--bg-light), #e5e7eb);
+        }
+        .dark body {
+            background: linear-gradient(135deg, var(--bg-dark), #374151);
+        }
+        .input-field {
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        .submit-btn {
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            background-color: #1e40af;
+        }
+        .progress-bar {
+            width: 0;
+            transition: width 0.5s ease-in-out;
+        }
+        .modal {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .error-message {
+            display: none;
+            color: #dc2626;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-2xl">
+        <div class="flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 mr-2" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+                <rect width="900" height="200" fill="#a1101c"/>
+                <rect y="200" width="900" height="100" fill="#fff"/>
+                <rect y="300" width="900" height="100" fill="#10257f"/>
+                <rect y="400" width="900" height="100" fill="#fff"/>
+                <rect y="500" width="900" height="100" fill="#a1101c"/>
+            </svg>
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Thailand Visa Application</h2>
+        </div>
+        <!-- Progress Bar -->
+        <div class="mb-6">
+            <div class="relative pt-1">
+                <div class="flex mb-2 items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-primary bg-blue-100 dark:bg-blue-900">
+                            Step 1: Personal Info
+                        </span>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-gray-600 dark:text-gray-400">
+                            Step 2: Documents
+                        </span>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-gray-600 dark:text-gray-400">
+                            Step 3: Category
+                        </span>
+                    </div>
+                </div>
+                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-100 dark:bg-blue-900">
+                    <div id="progress-bar" class="progress-bar shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Success Animation -->
+        <div id="success-message" class="hidden flex flex-col items-center justify-center mb-6">
+            <div id="lottie-success" class="w-32 h-32"></div>
+            <p class="text-lg font-semibold text-green-600 dark:text-green-400">Submission Successful!</p>
+        </div>
+        <div>
+            <!-- Mandatory Fields -->
+            <div class="mb-6">
+                <label for="name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">🖋️ Full Name <span class="text-red-500">*</span></label>
+                <input type="text" id="name" name="name" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <div class="mb-6">
+                <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">📧 Email Address <span class="text-red-500">*</span></label>
+                <input type="email" id="email" name="email" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+                <p id="email-error" class="error-message">Please enter a valid email address (e.g., user@example.com).</p>
+            </div>
+            <div class="mb-6">
+                <label for="phone_whatsapp" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">📞💬 Phone/WhatsApp Number (Bangladesh) <span class="text-red-500">*</span></label>
+                <input type="tel" id="phone_whatsapp" name="phone_whatsapp" required aria-required="true" placeholder="+88017xxxxxxxx"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+                <p id="phone_whatsapp-error" class="error-message">Please enter a valid Bangladeshi mobile number (e.g., +8801712345678).</p>
+            </div>
+            <div class="mb-6">
+                <label for="passport" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">🛂 Passport (PDF/Image, Valid 7+ Months) <span class="text-red-500">*</span></label>
+                <input type="file" id="passport" name="passport" accept=".pdf,.jpg,.jpeg,.png" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <div class="mb-6">
+                <label for="photo" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">📸 Photo (35mm x 45mm, JPG/PNG) <span class="text-red-500">*</span></label>
+                <input type="file" id="photo" name="photo" accept=".jpg,.jpeg,.png" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <div class="mb-6">
+                <label for="bank_solvency" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">🏦 Bank Solvency Certificate (PDF, Min. 60,000 BDT) <span class="text-red-500">*</span></label>
+                <input type="file" id="bank_solvency" name="bank_solvency" accept=".pdf" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <div class="mb-6">
+                <label for="bank_statement" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">🏦 6-Month Bank Statement (PDF, Min. 60,000 BDT) <span class="text-red-500">*</span></label>
+                <input type="file" id="bank_statement" name="bank_statement" accept=".pdf" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <div class="mb-6">
+                <label for="utility_bill" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">💡 Utility Bill (PDF/Image) <span class="text-red-500">*</span></label>
+                <input type="file" id="utility_bill" name="utility_bill" accept=".pdf,.jpg,.jpeg,.png" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <!-- Category Selection -->
+            <div class="mb-6">
+                <label for="category" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">🌐 Category <span class="text-red-500">*</span></label>
+                <select id="category" name="category" required aria-required="true"
+                        class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="business">Business</option>
+                    <option value="employee">Employee</option>
+                    <option value="student">Student</option>
+                </select>
+            </div>
+            <!-- Category-Specific Fields -->
+            <div class="mb-6 hidden" id="business_fields">
+                <label for="trade_license" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">📜 Trade License (Notarized, PDF) <span class="text-red-500">*</span></label>
+                <input type="file" id="trade_license" name="trade_license" accept=".pdf" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Not notarized? <button type="button" id="contact-btn" class="text-blue-600 hover:underline">Contact us</button>.</p>
+                <label for="visiting_card_business" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">💳 Visiting Card (PDF/Image) <span class="text-red-500">*</span></label>
+                <input type="file" id="visiting_card_business" name="visiting_card_business" accept=".pdf,.jpg,.jpeg,.png" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+                <label for="pad" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">📄 Business Pad (PDF/Image) <span class="text-red-500">*</span></label>
+                <input type="file" id="pad" name="pad" accept=".pdf,.jpg,.jpeg,.png" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <div class="mb-6 hidden" id="employee_fields">
+                <label for="office_id" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">🪪 Office ID (PDF/Image) <span class="text-red-500">*</span></label>
+                <input type="file" id="office_id" name="office_id" accept=".pdf,.jpg,.jpeg,.png" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+                <label for="pay_slip" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">💸 Pay Slip/Salary Certificate (PDF) <span class="text-red-500">*</span></label>
+                <input type="file" id="pay_slip" name="pay_slip" accept=".pdf" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+                <label for="visiting_card_employee" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">💳 Visiting Card (PDF/Image, Optional)</label>
+                <input type="file" id="visiting_card_employee" name="visiting_card_employee" accept=".pdf,.jpg,.jpeg,.png"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <div class="mb-6 hidden" id="student_fields">
+                <label for="student_id" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">🎓 Student ID (PDF/Image) <span class="text-red-500">*</span></label>
+                <input type="file" id="student_id" name="student_id" accept=".pdf,.jpg,.jpeg,.png" required aria-required="true"
+                       class="input-field mt-1 block w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none">
+            </div>
+            <button type="submit" id="submit-btn"
+                    class="submit-btn w-full bg-primary text-white p-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                Submit Documents
+            </button>
+        </div>
+    </div>
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Contact Us</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">For non-notarized Trade License inquiries, please provide your details.</p>
+            <div class="mb-4">
+                <label for="contact-name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Name</label>
+                <input type="text" id="contact-name" class="input-field mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+            </div>
+            <div class="mb-4">
+                <label for="contact-email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Email</label>
+                <input type="email" id="contact-email" class="input-field mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+            </div>
+            <div class="flex justify-end">
+                <button id="close-modal" class="mr-2 px-4 py-2 text-gray-600 dark:text-gray-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">Cancel</button>
+                <button id="submit-contact" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-700">Submit</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const categorySelect = document.getElementById('category');
+        const businessFields = document.getElementById('business_fields');
+        const employeeFields = document.getElementById('employee_fields');
+        const studentFields = document.getElementById('student_fields');
+        const submitBtn = document.getElementById('submit-btn');
+        const successMessage = document.getElementById('success-message');
+        const progressBar = document.getElementById('progress-bar');
+        const contactBtn = document.getElementById('contact-btn');
+        const contactModal = document.getElementById('contact-modal');
+        const closeModal = document.getElementById('close-modal');
+        const submitContact = document.getElementById('submit-contact');
+        const emailInput = document.getElementById('email');
+        const phoneWhatsAppInput = document.getElementById('phone_whatsapp');
+        const emailError = document.getElementById('email-error');
+        const phoneWhatsAppError = document.getElementById('phone_whatsapp-error');
+
+        // Lottie Animation
+        const lottieAnimation = lottie.loadAnimation({
+            container: document.getElementById('lottie-success'),
+            renderer: 'svg',
+            loop: false,
+            autoplay: false,
+            path: 'https://assets.lottiefiles.com/packages/lf20_checkmark.json'
+        });
+
+        // Progress Bar Update
+        function updateProgress() {
+            const inputs = document.querySelectorAll('input[required], select[required]');
+            const filledInputs = Array.from(inputs).filter(input => input.value);
+            const progress = (filledInputs.length / inputs.length) * 100;
+            progressBar.style.width = `${Math.max(33, Math.min(100, progress))}%`;
+        }
+
+        // Email Validation
+        function validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailInput.value)) {
+                emailInput.classList.add('border-red-500');
+                emailError.style.display = 'block';
+                return false;
+            } else {
+                emailInput.classList.remove('border-red-500');
+                emailError.style.display = 'none';
+                return true;
+            }
+        }
+
+        emailInput.addEventListener('input', () => {
+            validateEmail();
+            updateProgress();
+        });
+
+        // Phone/WhatsApp Validation (Bangladeshi Format)
+        function validatePhoneWhatsApp() {
+            const phoneRegex = /^\+8801[3-9]\d{8}$/;
+            if (!phoneRegex.test(phoneWhatsAppInput.value)) {
+                phoneWhatsAppInput.classList.add('border-red-500');
+                phoneWhatsAppError.style.display = 'block';
+                return false;
+            } else {
+                phoneWhatsAppInput.classList.remove('border-red-500');
+                phoneWhatsAppError.style.display = 'none';
+                return true;
+            }
+        }
+
+        phoneWhatsAppInput.addEventListener('input', () => {
+            validatePhoneWhatsApp();
+            updateProgress();
+        });
+
+        // Category Toggle
+        categorySelect.addEventListener('change', () => {
+            businessFields.classList.add('hidden');
+            employeeFields.classList.add('hidden');
+            studentFields.classList.add('hidden');
+
+            businessFields.querySelectorAll('input[required]').forEach(input => input.removeAttribute('required'));
+            employeeFields.querySelectorAll('input[required]').forEach(input => input.removeAttribute('required'));
+            studentFields.querySelectorAll('input[required]').forEach(input => input.removeAttribute('required'));
+
+            if (categorySelect.value === 'business') {
+                businessFields.classList.remove('hidden');
+                businessFields.querySelectorAll('input').forEach(input => input.setAttribute('required', ''));
+            } else if (categorySelect.value === 'employee') {
+                employeeFields.classList.remove('hidden');
+                employeeFields.querySelectorAll('input:not(#visiting_card_employee)').forEach(input => input.setAttribute('required', ''));
+            } else if (categorySelect.value === 'student') {
+                studentFields.classList.remove('hidden');
+                studentFields.querySelectorAll('input').forEach(input => input.setAttribute('required', ''));
+            }
+            updateProgress();
+        });
+
+        // File Validation
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const file = input.files[0];
+                if (file) {
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+                    if (file.size > maxSize) {
+                        alert(`File ${file.name} is too large. Maximum size is 5MB.`);
+                        input.value = '';
+                        return;
+                    }
+                    const validTypes = input.accept.split(',');
+                    const fileType = `.${file.name.split('.').pop().toLowerCase()}`;
+                    if (!validTypes.includes(fileType)) {
+                        alert(`Invalid file type for ${file.name}. Allowed types: ${validTypes.join(', ')}`);
+                        input.value = '';
+                        return;
+                    }
+                    if (input.id === 'photo') {
+                        const img = new Image();
+                        img.onload = () => {
+                            if (img.width !== 35 || img.height !== 45) {
+                                alert('Photo must be 35mm x 45mm.');
+                                input.value = '';
+                            }
+                        };
+                        img.src = URL.createObjectURL(file);
+                    }
+                }
+                updateProgress();
+            });
+        });
+
+        // Form Submission
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const requiredInputs = document.querySelectorAll('input[required], select[required]');
+            let allValid = true;
+
+            requiredInputs.forEach(input => {
+                if (!input.value) {
+                    allValid = false;
+                    input.classList.add('border-red-500');
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            const isEmailValid = validateEmail();
+            const isPhoneWhatsAppValid = validatePhoneWhatsApp();
+
+            if (allValid && isEmailValid && isPhoneWhatsAppValid) {
+                successMessage.classList.remove('hidden');
+                lottieAnimation.play();
+                setTimeout(() => {
+                    successMessage.classList.add('hidden');
+                    lottieAnimation.stop();
+                }, 3000);
+            } else {
+                alert('Please correct the errors in the form.');
+            }
+        });
+
+        // Contact Modal
+        contactBtn.addEventListener('click', () => {
+            contactModal.classList.remove('hidden');
+            contactModal.style.opacity = '1';
+            contactModal.style.transform = 'scale(1)';
+        });
+
+        closeModal.addEventListener('click', () => {
+            contactModal.style.opacity = '0';
+            contactModal.style.transform = 'scale(0.95)';
+            setTimeout(() => contactModal.classList.add('hidden'), 300);
+        });
+
+        submitContact.addEventListener('click', () => {
+            const contactName = document.getElementById('contact-name').value;
+            const contactEmail = document.getElementById('contact-email').value;
+            if (contactName && contactEmail) {
+                alert('Contact request submitted!');
+                closeModal.click();
+            } else {
+                alert('Please fill all contact fields.');
+            }
+        });
+
+        // Accessibility: Keyboard Navigation
+        document.querySelectorAll('input, select, button').forEach(el => {
+            el.addEventListener('focus', () => {
+                el.classList.add('ring-2', 'ring-primary');
+            });
+            el.addEventListener('blur', () => {
+                el.classList.remove('ring-2', 'ring-primary');
+            });
+        });
+
+        // Initial Progress Update
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
+        updateProgress();
+    </script>
+</body>
+</html>
